@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { authService } from "../fbase"
+import { authService, firebaseInstance } from "../fbase"
 
 //function component라고 함
 //export default () => <span>Auth</span>
@@ -38,6 +38,19 @@ const Auth = () => {
     }
 
     const toggleAccount = () => setnewAccount((prev) => !prev)
+    const onSocialClick = async (e) => {
+        const { target: { name } } = e
+        let provider
+        if (name === "google") {
+            provider = new firebaseInstance.auth.GoogleAuthProvider()
+        }
+        else if (name === "github") {
+            provider = new firebaseInstance.auth.GithubAuthProvider()
+        }
+        //참고 https://firebase.google.com/docs/reference/js/firebase.auth.Auth?authuser=0#signinwithpopup
+        const data = await authService.signInWithPopup(provider)
+        console.log(data)
+    }
 
     return (
         <div>
@@ -49,8 +62,8 @@ const Auth = () => {
             </form>
             <span onClick={toggleAccount}>{newAccount ? "Sign In" : "Create Account"}</span>
             <div>
-                <button>Continue with Google</button>
-                <button>Continue with Github</button>
+                <button onClick={onSocialClick} name="google">Continue with Google</button>
+                <button onClick={onSocialClick} name="github">Continue with Github</button>
             </div>
         </div>
     )
