@@ -1,4 +1,4 @@
-
+import React from "react"
 import { HashRouter as Router, Route, Switch } from "react-router-dom"
 import Navigation from "./Navigation"
 
@@ -8,7 +8,7 @@ import Profile from "../routes/Profile"
 
 
 
-const AppRouter = ({ isLoggenIn }) => {
+const AppRouter = ({ isLoggenIn, userObject }) => {
 
     return (
         <Router>
@@ -18,7 +18,7 @@ const AppRouter = ({ isLoggenIn }) => {
                     isLoggenIn ? (
                         <>
                             <Route exact path="/">
-                                <Home />
+                                <Home userObject={userObject} />
                             </Route>
                             <Route exact path="/profile">
                                 <Profile />
