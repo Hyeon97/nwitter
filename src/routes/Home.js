@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react"
+import Nweet from "../components/Nweet"
 import { dbService } from "../fbase"
 
 //function component라고 함
@@ -67,9 +68,11 @@ const Home = ({ userObject }) => {//로그인한 유저의 정보를 props로 �
             </form>
             <div>
                 {nweets.map((nweet) =>
-                    <div key={nweet.id} >
-                        <h4>{nweet.text}</h4>
-                    </div>
+                    <Nweet
+                        key={nweet.id}
+                        nweetObject={nweet}
+                        isOwner={nweet.creatorId === userObject.uid}
+                    />
                 )}
             </div>
         </div>
