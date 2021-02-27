@@ -23,6 +23,8 @@ function App() {
         })
         //프로필 이름 바꿨을때 실시간으로 re-render하는 방법 2 (비선호)
         //setuserObject(user)
+      } else {
+        setuserObject(null)
       }
       setinit(true)
     })

@@ -14,7 +14,6 @@ const Profile = ({ refreshUser, userObject }) => {
     const onLogOutClick = () => {
         authService.signOut();
         history.push("/");
-
     }
     // const getMyNweets = async () => {
     //     //기본적인 필터링 방법
