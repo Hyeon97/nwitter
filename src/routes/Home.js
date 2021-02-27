@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react"
+import { v4 as uuidv4 } from "uuid"
 import Nweet from "../components/Nweet"
-import { dbService } from "../fbase"
+import { dbService, storageService } from "../fbase"
 
 //function component라고 함
 //export default () => <span>Home</span>
@@ -41,18 +42,34 @@ const Home = ({ userObject }) => {//로그인한 유저의 정보를 props로 �
                 ...doc.data(),
             }))
             setnweets(nweetArray)//모든 불러오기 작업이 끝난후 값 업데이트
+            //console.log(nweetArray)
         })
+
     }, [])
 
     const onSubmit = async (e) => {
         e.preventDefault()
-        //참고 https://firebase.google.com/docs/reference/js/firebase.firestore.Firestore?authuser=0#collection
-        await dbService.collection("nweets").add({
+        let attachmentUrl = ""
+        if (attachment !== "") {
+            //참고 https://firebase.google.com/docs/reference/js/firebase.storage.Reference?authuser=0#child
+            //collection이랑 비슷하게 동작
+            const attachmentRef = storageService
+                .ref()
+                .child(`${userObject.uid}/${uuidv4()}`)
+            //참고 https://firebase.google.com/docs/reference/js/firebase.storage.Reference?authuser=0#putstring
+            const response = await attachmentRef.putString(attachment, "data_url")
+            attachmentUrl = await response.ref.getDownloadURL()
+        }
+        const nweetObject = {
             text: nweet,
             createAt: Date.now(),
             creatorId: userObject.uid,
-        })
+            attachmentUrl,
+        }
+        //참고 https://firebase.google.com/docs/reference/js/firebase.firestore.Firestore?authuser=0#collection
+        await dbService.collection("nweets").add(nweetObject)
         setnweet("")
+        setattachment("")
     }
     const onChange = (e) => {
         // e.target.value 이거랑 같음 es6문법, event 안의 target안에 있는 value를 달라와 같은 말
@@ -60,7 +77,7 @@ const Home = ({ userObject }) => {//로그인한 유저의 정보를 props로 �
         setnweet(value)
     }
 
-    //console.log(nweets)
+
     //미리보기 화면 사진 한장 만들기
     const onFileChange = (e) => {
         const { target: { files } } = e
@@ -69,7 +86,7 @@ const Home = ({ userObject }) => {//로그인한 유저의 정보를 props로 �
         reader.onloadend = (finishedEvent) => {//이벤트 리스너
             const { currentTarget: { result } } = finishedEvent
             setattachment(result)
-            console.log(finishedEvent)
+            //console.log(finishedEvent)
         }
         reader.readAsDataURL(theFile)
     }
@@ -77,6 +94,7 @@ const Home = ({ userObject }) => {//로그인한 유저의 정보를 props로 �
     const onClearAttachment = () => {
         setattachment(null)
     }
+
     return (
         <div>
             <form onSubmit={onSubmit}>
