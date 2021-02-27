@@ -50,9 +50,9 @@ const Home = ({ userObject }) => {//로그인한 유저의 정보를 props로 �
 
 
     return (
-        <div>
+        <div className="container">
             <NweetFactory userObject={userObject} />
-            <div>
+            <div style={{ marginTop: 30 }}>
                 {nweets.map((nweet) =>
                     <Nweet
                         key={nweet.id}
