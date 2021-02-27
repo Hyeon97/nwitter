@@ -10,6 +10,7 @@ const Home = ({ userObject }) => {//로그인한 유저의 정보를 props로 �
     //console.log(userObject)
     const [nweet, setnweet] = useState("")
     const [nweets, setnweets] = useState([])
+    const [attachment, setattachment] = useState("")
     // 오래된 방법
     // const getNweets = async () => {
     //     //참고 https://firebase.google.com/docs/reference/js/firebase.firestore.CollectionReference?authuser=0#get
@@ -60,11 +61,45 @@ const Home = ({ userObject }) => {//로그인한 유저의 정보를 props로 �
     }
 
     //console.log(nweets)
+    //미리보기 화면 사진 한장 만들기
+    const onFileChange = (e) => {
+        const { target: { files } } = e
+        const theFile = files[0]
+        const reader = new FileReader()
+        reader.onloadend = (finishedEvent) => {//이벤트 리스너
+            const { currentTarget: { result } } = finishedEvent
+            setattachment(result)
+            console.log(finishedEvent)
+        }
+        reader.readAsDataURL(theFile)
+    }
+
+    const onClearAttachment = () => {
+        setattachment(null)
+    }
     return (
         <div>
             <form onSubmit={onSubmit}>
-                <input onChange={onChange} value={nweet} type="text" placeholder="what`s on your mind?" maxLength={120} />
+                <input
+                    onChange={onChange}
+                    value={nweet}
+                    type="text"
+                    placeholder="what`s on your mind?"
+                    maxLength={120}
+                />
+                <input
+                    type="file"
+                    accept="image/*"
+                    onChange={onFileChange}
+                />
                 <input type="submit" value="Nweet" />
+                {attachment &&
+                    <div>
+                        <img src={attachment} width="50px" height="50px" />
+                        <button onClick={onClearAttachment}>Clear</button>
+                    </div>
+                }
+
             </form>
             <div>
                 {nweets.map((nweet) =>
