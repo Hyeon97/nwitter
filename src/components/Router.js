@@ -8,11 +8,11 @@ import Profile from "../routes/Profile"
 
 
 
-const AppRouter = ({ isLoggenIn, userObject }) => {
+const AppRouter = ({ refreshUser, isLoggenIn, userObject }) => {
 
     return (
         <Router>
-            {isLoggenIn && <Navigation />}
+            {isLoggenIn && <Navigation userObject={userObject} />}
             <Switch>
                 {
                     isLoggenIn ? (
@@ -21,7 +21,7 @@ const AppRouter = ({ isLoggenIn, userObject }) => {
                                 <Home userObject={userObject} />
                             </Route>
                             <Route exact path="/profile">
-                                <Profile />
+                                <Profile userObject={userObject} refreshUser={refreshUser} />
                             </Route>
                         </>
                     ) : (
